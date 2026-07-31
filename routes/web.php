@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\MovieController;
+use App\Http\Controllers\ScreeningController;
+use App\Http\Controllers\HallController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +22,15 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/screenings/{screening}/reserve', [ReservationController::class, 'show'])->name('reservations.show');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/screenings/{screening}/reserve', [ReservationController::class, 'store'])->name('reservations.store');
+});
+
+Route::get('/', [MovieController::class, 'index'])->name('home');
+
+Route::resource('movies', MovieController::class)->only(['index', 'show']);
+Route::resource('screenings', ScreeningController::class)->only(['index', 'show']);
+Route::resource('halls', HallController::class)->only(['index', 'show']);

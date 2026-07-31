@@ -2,65 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Screening;
 use App\Models\Reservation;
-use App\Http\Controllers\Controller;
+use App\Models\Seat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function show(Screening $screening)
     {
-        //
+        $screening->load(['movie', 'hall']);
+
+        $seats = Seat::where('hall_id', $screening->hall_id)->get();
+
+        $reservedSeatIds = Reservation::where('screening_id', $screening->id)
+            ->pluck('seat_id')
+            ->toArray();
+
+        return view('reservations.show', compact('screening', 'seats', 'reservedSeatIds'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request, Screening $screening)
     {
-        //
-    }
+        $request->validate([
+            'seats' => 'required|array',
+            'seats.*' => 'exists:seats,id',
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        foreach ($request->seats as $seatId) {
+            $exists = Reservation::where('screening_id', $screening->id)
+                ->where('seat_id', $seatId)
+                ->exists();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Reservation $reservation)
-    {
-        //
-    }
+            if (!$exists) {
+                Reservation::create([
+                    'user_id' => Auth::id(),
+                    'screening_id' => $screening->id,
+                    'seat_id' => $seatId,
+                ]);
+            }
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Reservation $reservation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Reservation $reservation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Reservation $reservation)
-    {
-        //
+        return redirect()->route('profile.show')->with('success', 'Rezervace byla úspěšně vytvořena!');
     }
 }
