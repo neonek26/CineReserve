@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('duration_minutes');
+            $table->integer('duration');
+            $table->string('genre')->nullable();
             $table->string('poster_path')->nullable();
             $table->timestamps();
         });
