@@ -46,4 +46,13 @@ class ReservationController extends Controller
 
         return redirect()->route('profile.show')->with('success', 'Rezervace byla úspěšně vytvořena!');
     }
+    public function index()
+{
+    $reservations = Reservation::where('user_id', Auth::id())
+        ->with(['screening.movie', 'screening.hall', 'seat'])
+        ->latest()
+        ->get();
+
+    return view('reservations.index', compact('reservations'));
+}
 }
