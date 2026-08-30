@@ -6,6 +6,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ScreeningController;
 use App\Http\Controllers\HallController;
+use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', [MovieController::class, 'index'])->name('home');
 
@@ -25,6 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservations/{reservation}/pay', [ReservationController::class, 'processPayment'])->name('reservations.processPayment');
 
     Route::get('/my-reservations', [ReservationController::class, 'index'])->name('reservations.index');
+});
+
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
+    Route::get('/admin/movies/create', [MovieController::class, 'create'])->name('movies.create');
+    Route::post('/admin/movies', [MovieController::class, 'store'])->name('movies.store');
+    Route::delete('/admin/movies/{movie}', [MovieController::class, 'destroy'])->name('movies.destroy');
+
+    Route::get('/admin/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
+    Route::post('/admin/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
 });
 
 Route::resource('movies', MovieController::class)->only(['index', 'show']);

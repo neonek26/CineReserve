@@ -7,11 +7,30 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(session('success'))
+                <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($movies as $movie)
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col justify-between">
                         <div>
-                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">{{ $movie->genre }}</span>
+                            <div class="flex justify-between items-start">
+                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">{{ $movie->genre }}</span>
+                                
+                                @if(Auth::check() && Auth::user()->is_admin)
+                                    <form action="{{ route('movies.destroy', $movie) }}" method="POST" onsubmit="return confirm('Opravdu chcete smazat tento film?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-xs uppercase">
+                                            Smazat
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
                             <h3 class="text-2xl font-bold text-gray-900 mt-1 mb-2">{{ $movie->title }}</h3>
                             <p class="text-sm text-gray-500 mb-4">Délka: {{ $movie->duration }} minut</p>
                             <p class="text-gray-700 text-sm mb-6">{{ $movie->description }}</p>

@@ -24,4 +24,28 @@ class MovieController extends Controller
 
         return view('movies.show', compact('movie'));
     }
+    public function create()
+{
+    return view('movies.create');
+}
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'duration' => 'required|integer|min:1',
+            'genre' => 'required|string|max:100',
+        ]);
+
+        Movie::create($validated);
+
+        return redirect()->route('home')->with('success', 'Film byl úspěšně přidán!');
+    }
+    public function destroy(Movie $movie)
+    {
+        $movie->delete();
+
+        return redirect()->route('home')->with('success', 'Film byl úspěšně smazán!');
+    }
 }
