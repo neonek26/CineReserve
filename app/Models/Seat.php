@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Seat extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'hall_id',
-        'row',
-        'number',
+        'row_number',
+        'seat_number',
     ];
 
-    public function hall(): BelongsTo
+    public function hall()
     {
         return $this->belongsTo(Hall::class);
     }
 
-    public function reservations(): HasMany
+    public function reservations()
     {
         return $this->hasMany(Reservation::class);
     }

@@ -36,6 +36,12 @@
                         @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
+                    <div>
+                        <label class="block font-bold mb-1">URL plakátu / obrázku</label>
+                        <input type="url" name="poster_url" value="{{ old('poster_url') }}" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="https://example.com/plakat.jpg">
+                        @error('poster_url') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
+
                     <div class="pt-4">
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg">
                             Uložit film

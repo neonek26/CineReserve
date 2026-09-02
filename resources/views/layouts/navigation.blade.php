@@ -21,6 +21,15 @@
                             <x-nav-link :href="route('movies.create')" :active="request()->routeIs('movies.create')">
                                 {{ __('+ Přidat film') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('screenings.create')" :active="request()->routeIs('screenings.create')">
+                                {{ __('+ Přidat promítání') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('halls.create')" :active="request()->routeIs('halls.create')">
+                                {{ __('+ Přidat sál') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
+                                {{ __('Všechny rezervace') }}
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -82,6 +91,15 @@
                 @if(Auth::user()->is_admin)
                     <x-responsive-nav-link :href="route('movies.create')" :active="request()->routeIs('movies.create')">
                         {{ __('+ Přidat film') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('screenings.create')" :active="request()->routeIs('screenings.create')">
+                        {{ __('+ Přidat promítání') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('halls.create')" :active="request()->routeIs('halls.create')">
+                        {{ __('+ Přidat sál') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
+                        {{ __('Všechny rezervace') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth

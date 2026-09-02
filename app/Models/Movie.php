@@ -14,6 +14,7 @@ class Movie extends Model
         'description',
         'duration',
         'genre',
+        'poster_url',
     ];
 
     public function screenings()

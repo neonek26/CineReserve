@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservations/{reservation}/pay', [ReservationController::class, 'processPayment'])->name('reservations.processPayment');
 
     Route::get('/my-reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 });
 
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
@@ -35,6 +36,11 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
     Route::get('/admin/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
     Route::post('/admin/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
+
+    Route::get('/admin/halls/create', [HallController::class, 'create'])->name('halls.create');
+    Route::post('/admin/halls', [HallController::class, 'store'])->name('halls.store');
+
+    Route::get('/admin/reservations', [ReservationController::class, 'adminIndex'])->name('admin.reservations.index');
 });
 
 Route::resource('movies', MovieController::class)->only(['index', 'show']);

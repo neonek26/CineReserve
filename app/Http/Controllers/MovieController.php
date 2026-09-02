@@ -36,8 +36,8 @@ class MovieController extends Controller
             'description' => 'required|string',
             'duration' => 'required|integer|min:1',
             'genre' => 'required|string|max:100',
+            'poster_url' => 'nullable|url',
         ]);
-
         Movie::create($validated);
 
         return redirect()->route('home')->with('success', 'Film byl úspěšně přidán!');
