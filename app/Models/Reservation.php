@@ -9,7 +9,14 @@ class Reservation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'screening_id', 'row_number', 'seat_number'];
+    protected $table = 'reservations';
+
+    protected $fillable = [
+        'user_id',
+        'screening_id',
+        'seat_id',
+        'status',
+    ];
 
     public function user()
     {
@@ -19,5 +26,10 @@ class Reservation extends Model
     public function screening()
     {
         return $this->belongsTo(Screening::class);
+    }
+
+    public function seat()
+    {
+        return $this->belongsTo(Seat::class);
     }
 }

@@ -9,7 +9,14 @@ class Hall extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'rows_count', 'seats_per_row'];
+    protected $fillable = [
+        'name',
+    ];
+
+    public function seats()
+    {
+        return $this->hasMany(Seat::class);
+    }
 
     public function screenings()
     {

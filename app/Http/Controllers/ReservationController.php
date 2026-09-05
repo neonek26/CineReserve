@@ -2,57 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Screening;
 use App\Models\Reservation;
-use App\Models\Seat;
+use App\Models\Screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
-    public function show(Screening $screening)
+    public function index()
     {
-        $screening->load(['movie', 'hall']);
+        $reservations = Reservation::with(['screening.movie', 'screening.hall', 'seat'])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
 
-        $seats = Seat::where('hall_id', $screening->hall_id)->get();
+        return view('reservations.index', compact('reservations'));
+    }
+
+    public function create(Screening $screening)
+    {
+        $screening->load(['movie', 'hall.seats']);
 
         $reservedSeatIds = Reservation::where('screening_id', $screening->id)
             ->pluck('seat_id')
             ->toArray();
 
-        return view('reservations.show', compact('screening', 'seats', 'reservedSeatIds'));
+        return view('reservations.create', compact('screening', 'reservedSeatIds'));
     }
 
     public function store(Request $request, Screening $screening)
     {
-        $request->validate([
-            'seats' => 'required|array',
-            'seats.*' => 'exists:seats,id',
+        $validated = $request->validate([
+            'seat_ids' => 'required|array|min:1',
+            'seat_ids.*' => 'exists:seats,id',
         ]);
 
-        foreach ($request->seats as $seatId) {
-            $exists = Reservation::where('screening_id', $screening->id)
-                ->where('seat_id', $seatId)
-                ->exists();
+        $alreadyReserved = Reservation::where('screening_id', $screening->id)
+            ->whereIn('seat_id', $validated['seat_ids'])
+            ->exists();
 
-            if (!$exists) {
-                Reservation::create([
-                    'user_id' => Auth::id(),
-                    'screening_id' => $screening->id,
-                    'seat_id' => $seatId,
-                ]);
-            }
+        if ($alreadyReserved) {
+            return back()->withErrors(['seat_ids' => 'Jedno nebo více z vybraných sedadel je již rezervováno.']);
         }
 
-        return redirect()->route('profile.show')->with('success', 'Rezervace byla úspěšně vytvořena!');
-    }
-    public function index()
-{
-    $reservations = Reservation::where('user_id', Auth::id())
-        ->with(['screening.movie', 'screening.hall', 'seat'])
-        ->latest()
-        ->get();
+        foreach ($validated['seat_ids'] as $seatId) {
+            Reservation::create([
+                'user_id' => Auth::id(),
+                'screening_id' => $screening->id,
+                'seat_id' => $seatId,
+                'status' => 'pending',
+            ]);
+        }
 
-    return view('reservations.index', compact('reservations'));
-}
+        return redirect()->route('reservations.index')->with('success', 'Rezervace byla úspěšně vytvořena!');
+    }
+
+    public function pay(Reservation $reservation)
+    {
+        if (Auth::id() !== $reservation->user_id) {
+            abort(403);
+        }
+
+        $reservation->update([
+            'status' => 'paid',
+        ]);
+
+        return back()->with('success', 'Platba proběhla úspěšně!');
+    }
+
+    public function destroy(Reservation $reservation)
+    {
+        if (Auth::id() !== $reservation->user_id && !Auth::user()->is_admin) {
+            abort(403);
+        }
+
+        $reservation->delete();
+
+        return back()->with('success', 'Rezervace byla úspěšně zrušena.');
+    }
+
+    public function adminIndex()
+    {
+        $reservations = Reservation::with(['user', 'screening.movie', 'screening.hall', 'seat'])
+            ->latest()
+            ->get();
+
+        return view('admin.reservations.index', compact('reservations'));
+    }
 }

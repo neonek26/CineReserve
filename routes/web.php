@@ -43,6 +43,10 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/admin/reservations', [ReservationController::class, 'adminIndex'])->name('admin.reservations.index');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/reservations/{reservation}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
+});
+
 Route::resource('movies', MovieController::class)->only(['index', 'show']);
 Route::resource('screenings', ScreeningController::class)->only(['index', 'show']);
 Route::resource('halls', HallController::class)->only(['index', 'show']);

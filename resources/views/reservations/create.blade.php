@@ -14,7 +14,7 @@
                     <p class="text-sm text-gray-600">
                         Sál: {{ $screening->hall->name }} | 
                         Čas: {{ \Carbon\Carbon::parse($screening->starts_at)->format('d.m.Y H:i') }} | 
-                        Cena: <strong>{{ number_format($screening->price, 0) }} Kč</strong>
+                        Cena za lístek: <strong>{{ number_format($screening->price, 0) }} Kč</strong>
                     </p>
                 </div>
 
@@ -28,7 +28,7 @@
                     <div class="flex flex-col items-center gap-3 mb-8">
                         @foreach($screening->hall->seats->groupBy('row_number') as $rowNumber => $seats)
                             <div class="flex items-center gap-2">
-                                <span class="w-8 text-right font-bold text-gray-500 mr-2">Řada {{ $rowNumber }}</span>
+                                <span class="w-20 text-right font-bold text-gray-500 mr-2">Řada {{ $rowNumber }}</span>
                                 <div class="flex gap-2">
                                     @foreach($seats as $seat)
                                         @php
@@ -41,7 +41,7 @@
                                             </button>
                                         @else
                                             <label class="cursor-pointer">
-                                                <input type="radio" name="seat_id" value="{{ $seat->id }}" class="hidden peer" required>
+                                                <input type="checkbox" name="seat_ids[]" value="{{ $seat->id }}" class="hidden peer">
                                                 <span class="w-10 h-10 bg-green-500 hover:bg-green-600 peer-checked:bg-blue-600 text-white font-bold rounded flex items-center justify-center transition">
                                                     {{ $seat->seat_number }}
                                                 </span>
@@ -65,9 +65,13 @@
                         </div>
                     </div>
 
+                    @error('seat_ids')
+                        <p class="text-red-500 text-center font-bold mb-4">{{ $message }}</p>
+                    @enderror
+
                     <div class="text-center">
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow">
-                            Pokračovat k platbě
+                            Potvrdit a zarezervovat
                         </button>
                     </div>
                 </form>
