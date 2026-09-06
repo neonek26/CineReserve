@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            'name' => 'Admin Cinema',
+            'name' => 'Admin',
             'email' => 'admin@cinereserve.cz',
             'password' => Hash::make('password'),
             'is_admin' => true,
@@ -28,17 +28,17 @@ class DatabaseSeeder extends Seeder
             'is_admin' => false,
         ]);
 
-$hall1 = Hall::create([
-    'name' => 'Sál 1 (Velký)',
-    'rows_count' => 4,
-    'seats_per_row' => 5,
-]);
+        $hall1 = Hall::create([
+            'name' => 'Sál 1 (Velký)',
+            'rows_count' => 4,
+            'seats_per_row' => 5,
+        ]);
 
-$hall2 = Hall::create([
-    'name' => 'Sál 2 (VIP)',
-    'rows_count' => 3,
-    'seats_per_row' => 4,
-]);
+        $hall2 = Hall::create([
+            'name' => 'Sál 2 (VIP)',
+            'rows_count' => 3,
+            'seats_per_row' => 4,
+        ]);
 
         for ($row = 1; $row <= 4; $row++) {
             for ($seat = 1; $seat <= 5; $seat++) {
@@ -62,9 +62,10 @@ $hall2 = Hall::create([
 
         $movie1 = Movie::create([
             'title' => 'Obsession',
-            'description' => 'Psychologický thriller plný nečekaných zvratů a napětí.',
+            'description' => 'Psychologický thriller plný nečekaných zvratů, touhy a napětí.',
             'duration' => 115,
             'genre' => 'Thriller',
+            'poster_url' => 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop',
         ]);
 
         $movie2 = Movie::create([
@@ -72,13 +73,15 @@ $hall2 = Hall::create([
             'description' => 'Příběh J. Roberta Oppenheimera a vývoje první atomové bomby.',
             'duration' => 180,
             'genre' => 'Drama / Biografický',
+            'poster_url' => 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&auto=format&fit=crop',
         ]);
 
         $movie3 = Movie::create([
-            'title' => 'Odyssea',
-            'description' => 'Epická sci-fi cesta napříč prostorem a časem za hranice známého vesmíru.',
-            'duration' => 145,
-            'genre' => 'Sci-Fi / Dobrodružný',
+            'title' => 'Umamusume: Pretty Derby – Beginning of a New Era',
+            'description' => 'Jungle Pocket se účastní závodů Twinkle Series a snaží se překonat své soupeře v boji o titul nejrychlejší koňské dívky.',
+            'duration' => 108,
+            'genre' => 'Anime / Sportovní / Drama',
+            'poster_url' => 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop',
         ]);
 
         Screening::create([

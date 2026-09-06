@@ -15,28 +15,38 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($movies as $movie)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex flex-col justify-between">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-start">
-                                <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">{{ $movie->genre }}</span>
-                                
-                                @if(Auth::check() && Auth::user()->is_admin)
-                                    <form action="{{ route('movies.destroy', $movie) }}" method="POST" onsubmit="return confirm('Opravdu chcete smazat tento film?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-xs uppercase">
-                                            Smazat
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
+                            @if($movie->poster_url)
+                                <img src="{{ $movie->poster_url }}" alt="{{ $movie->title }}" class="w-full h-72 object-cover">
+                            @else
+                                <div class="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
+                                    Bez plakátu
+                                </div>
+                            @endif
 
-                            <h3 class="text-2xl font-bold text-gray-900 mt-1 mb-2">{{ $movie->title }}</h3>
-                            <p class="text-sm text-gray-500 mb-4">Délka: {{ $movie->duration }} minut</p>
-                            <p class="text-gray-700 text-sm mb-6">{{ $movie->description }}</p>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start">
+                                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">{{ $movie->genre }}</span>
+                                    
+                                    @if(Auth::check() && Auth::user()->is_admin)
+                                        <form action="{{ route('movies.destroy', $movie) }}" method="POST" onsubmit="return confirm('Opravdu chcete smazat tento film?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-xs uppercase">
+                                                Smazat
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 mb-2">{{ $movie->title }}</h3>
+                                <p class="text-sm text-gray-500 mb-4">Délka: {{ $movie->duration }} minut</p>
+                                <p class="text-gray-700 text-sm mb-6">{{ $movie->description }}</p>
+                            </div>
                         </div>
 
-                        <div>
+                        <div class="px-6 pb-6">
                             <h4 class="font-bold text-sm text-gray-800 mb-2 border-b pb-1">Nadcházející promítání:</h4>
                             @if($movie->screenings->isEmpty())
                                 <p class="text-xs text-gray-400">Žádné plánované termíny.</p>
