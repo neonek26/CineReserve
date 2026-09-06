@@ -37,6 +37,9 @@
                                 <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
                                     Zaplaceno
                                 </span>
+                                <a href="{{ route('reservations.ticket', $reservation) }}" target="_blank" class="bg-gray-800 hover:bg-black text-white text-xs font-bold py-1.5 px-3 rounded transition">
+                                    🎟️ Lístek
+                                </a>
                             @else
                                 <button type="button" 
                                         @click="openModal({{ $reservation->id }}, '{{ route('reservations.pay', $reservation) }}', {{ $reservation->screening->price ?? 0 }})"

@@ -41,6 +41,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::post('/admin/halls', [HallController::class, 'store'])->name('halls.store');
 
     Route::get('/admin/reservations', [ReservationController::class, 'adminIndex'])->name('admin.reservations.index');
+
+    Route::get('/reservations/{reservation}/ticket', [ReservationController::class, 'showTicket'])->name('reservations.ticket');
 });
 
 Route::middleware(['auth'])->group(function () {

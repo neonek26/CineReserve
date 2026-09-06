@@ -89,4 +89,18 @@ class ReservationController extends Controller
 
         return view('admin.reservations.index', compact('reservations'));
     }
+    public function showTicket(Reservation $reservation)
+    {
+        if (Auth::id() !== $reservation->user_id && !Auth::user()->is_admin) {
+            abort(403);
+        }
+
+        if ($reservation->status !== 'paid') {
+            return back()->withErrors(['message' => 'Lístek je k dispozici až po zaplacení.']);
+        }
+
+        $reservation->load(['screening.movie', 'screening.hall', 'seat', 'user']);
+
+        return view('reservations.ticket', compact('reservation'));
+    }
 }
